@@ -32,7 +32,7 @@ class Ball(pygame.sprite.Sprite):
         self.midx = image.get_width() / 2
         self.midy = image.get_height() / 2
 
-    def move(self, hitx=0, hity=0, isHit=False ):
+    def move(self, hitx=0, hity=0, isHit=False):
         # Keep the ball inside the play area
         # Anything else is a sprite collision and is handled with collision maps.
 
@@ -43,7 +43,7 @@ class Ball(pygame.sprite.Sprite):
 
         # If there's a hit detected, then we calculate the position from the centre of the sprite to the
         # collision point. This gives us the angle of impact from the horizontal.
-        if (isHit):
+        if isHit:
             self.angle = math.degrees(math.atan2((self.midy - hity), (self.midx - hitx)))
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
@@ -53,7 +53,7 @@ class Ball(pygame.sprite.Sprite):
             self.vx *= -1
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            #self.angle = 360 - self.angle
+
         elif ( self.rect.x > self.max_x):
             self.rect.x = self.max_x - 5
             self.vx *= -1

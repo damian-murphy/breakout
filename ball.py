@@ -48,31 +48,31 @@ class Ball(pygame.sprite.Sprite):
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
         # Check and see if you hit the side of the play area
-        elif ( self.rect.x < 5 ):
+        elif (self.rect.x < 5):
             self.rect.x = 5
             self.vx *= -1
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
 
-        elif ( self.rect.x > self.max_x):
+        elif (self.rect.x > self.max_x):
             self.rect.x = self.max_x - 5
             self.vx *= -1
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            #self.angle = 360 - self.angle
-        elif ( self.rect.y < 5 ):
+            # self.angle = 360 - self.angle
+        elif (self.rect.y < 5):
             self.rect.y = 5
             self.vy *= -1
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            #self.angle = 360 - self.angle
-        elif ( self.rect.y > self.max_y ):
+            # self.angle = 360 - self.angle
+        elif (self.rect.y > self.max_y):
             self.rect.y = self.max_y - 5
             self.vy *= -1
             self.angle = self.angle - 90
             self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
             self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            #self.angle = 360 - self.angle
+            # self.angle = 360 - self.angle
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y

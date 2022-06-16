@@ -75,7 +75,7 @@ def main():
     # Create the ball, a moving sprite.
     the_ball = Ball(ball_img, ball_img.get_width(), ball_img.get_height(), width, height)
 
-    # Group of balls. Should have called it a ballsack. LOL.
+    # Group of balls.
     balls = pygame.sprite.Group(the_ball)
 
     # If we're running in debug mode, then setup the debugger. Otherwise, eh, don't.

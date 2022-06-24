@@ -134,6 +134,11 @@ def main():
                 elif event.key == pygame.K_x:
                     keys[1] = False
         # Update the position vars so that the bat moves
+        # Don't let the bat move off into infinity
+        # TODO: FIX (https://github.com/damian-murphy/breakout/issues/2)
+        # Get the bat position, check if it's at the edge, adjust accordingly.
+        # maybe set a property on the bat that returns it's left edge, right edge
+        # so we can compare, as we know screen size, bat does not know the screen area
         if keys[0]:
             player1.moveLeft(10)
         elif keys[1]:

@@ -52,6 +52,12 @@ class player(pygame.sprite.Sprite):
     def moveLeft(self, pixels):
         self.rect.x -= pixels
 
+    def getLeftHandSide(self):
+        return self.rect.left
+
+    def getRightHandSide(self):
+        return self.rect.right
+
 
 def clear_callback(surf, rect):
     surf.fill(bgcolour, rect)
@@ -99,7 +105,8 @@ def main():
 
     # Set the player sprite starting position
     # Draw our player
-    player1.rect.x = 390
+    #player1.rect.x = 390
+    player1.rect.x = 10
     player1.rect.y = 560
     the_ball.rect.x = 300
     the_ball.rect.y = 500
@@ -133,16 +140,24 @@ def main():
                     keys[0] = False
                 elif event.key == pygame.K_x:
                     keys[1] = False
-        # Update the position vars so that the bat moves
-        # Don't let the bat move off into infinity
-        # TODO: FIX (https://github.com/damian-murphy/breakout/issues/2)
+
+        # FIX (https://github.com/damian-murphy/breakout/issues/2)
         # Get the bat position, check if it's at the edge, adjust accordingly.
-        # maybe set a property on the bat that returns it's left edge, right edge
-        # so we can compare, as we know screen size, bat does not know the screen area
+        # and make sure we don't move outside the play area, or the bat will disappear off screen
         if keys[0]:
-            player1.moveLeft(10)
+            if (player1.getLeftHandSide() < 10) & (player1.getLeftHandSide() > 0):
+                player1.moveLeft(10 - player1.getLeftHandSide())
+            elif player1.getLeftHandSide() == 0 or player1.getLeftHandSide() < 0:
+                player1.moveLeft(0)
+            else:
+                player1.moveLeft(10)
         elif keys[1]:
-            player1.moveRight(10)
+            if (player1.getRightHandSide() > (width-10)) and (player1.getRightHandSide() < width):
+                player1.moveRight(10 - (width - player1.getRightHandSide()))
+            elif player1.getRightHandSide() == width or player1.getRightHandSide() > width:
+                player1.moveRight(0)
+            else:
+                player1.moveRight(10)
 
         # Check for collisions
         # Let's do all the collision logic here, then we just tell the objects

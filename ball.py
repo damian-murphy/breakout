@@ -25,12 +25,16 @@ class Ball(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.speed = SPEED
-        self.angle = INIT_ANGLE
+        self.angle = math.radians(INIT_ANGLE)
         self.max_x = screenx - image.get_width()
         self.max_y = screeny - image.get_height()
         self.vx, self.vy = self.speed, -self.speed
         self.midx = image.get_width() / 2
         self.midy = image.get_height() / 2
+
+    def _nextpos(self):
+        self.rect.x = self.rect.x + (self.vx * math.cos(self.angle))
+        self.rect.y = self.rect.y + (self.vy * math.sin(self.angle))
 
     def move(self, hitx=0, hity=0, isHit=False):
         # Keep the ball inside the play area
@@ -44,37 +48,29 @@ class Ball(pygame.sprite.Sprite):
         # If there's a hit detected, then we calculate the position from the centre of the sprite to the
         # collision point. This gives us the angle of impact from the horizontal.
         if isHit:
-            self.angle = math.degrees(math.atan2((self.midy - hity), (self.midx - hitx)))
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
+            self.angle = math.atan2((hity - self.midy), (self.midx - hitx))
+            self.angle %= 2*math.pi
+            self.angle -= math.pi
+            self._nextpos()
+
         # Check and see if you hit the side of the play area
-        elif (self.rect.x < 5):
+        elif self.rect.x < 5:
             self.rect.x = 5
             self.vx *= -1
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-
-        elif (self.rect.x > self.max_x):
+            self._nextpos()
+        elif self.rect.x > self.max_x:
             self.rect.x = self.max_x - 5
             self.vx *= -1
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            # self.angle = 360 - self.angle
-        elif (self.rect.y < 5):
+            self._nextpos()
+        elif self.rect.y < 5:
             self.rect.y = 5
             self.vy *= -1
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            # self.angle = 360 - self.angle
-        elif (self.rect.y > self.max_y):
+            self._nextpos()
+        elif self.rect.y > self.max_y:
             self.rect.y = self.max_y - 5
             self.vy *= -1
-            self.angle = self.angle - 90
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
-            # self.angle = 360 - self.angle
+            self._nextpos()
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y
-            self.rect.x = self.rect.x + (self.vx * math.sin(self.angle))
-            self.rect.y = self.rect.y + (self.vy * math.cos(self.angle))
+            self._nextpos()

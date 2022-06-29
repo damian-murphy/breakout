@@ -11,6 +11,7 @@ from ball import Ball
 from wall import Wall, Block
 from debug import DebugBox
 from pygame.locals import *
+import math
 
 # Setup
 width, height = 800, 600
@@ -194,7 +195,7 @@ def main():
         if (DEBUG):
             debugger.clear(bgcolour)
             debugmessage = "P {0: >4.0f},{1: >4.0f} B {2: >4.0f},{3: >4.0f} A {4: >4.0f} V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} frames/sec".format(
-                player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y, the_ball.angle, the_ball.vx,
+                player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y, math.degrees(the_ball.angle), the_ball.vx,
                 the_ball.vy, clock.get_rawtime(), clock.get_fps())
             debugger.message(debugmessage)
 

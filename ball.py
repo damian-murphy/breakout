@@ -1,6 +1,7 @@
 # Ball Object - extends pygame sprite class
 import pygame
 import math
+from icecream import ic
 
 WHITE = (255, 255, 255)
 SPEED = 5
@@ -35,22 +36,21 @@ class Ball(pygame.sprite.Sprite):
     def _nextpos(self):
         self.rect.x = self.rect.x + (self.vx * math.cos(self.angle))
         self.rect.y = self.rect.y + (self.vy * math.sin(self.angle))
+        ic(self.rect.x, self.rect.y, math.degrees(self.angle), self.vx, self.vy)
 
     def move(self, hitx=0, hity=0, isHit=False):
         # Keep the ball inside the play area
         # Anything else is a sprite collision and is handled with collision maps.
-
-        # self.rect.x += ( SPEED * math.cos(self.angle))
-        # self.rect.y += ( SPEED * math.sin(self.angle))
-
-        # Here we'll take care of the bounding box collisions
+        # Here we'll also take care of the bounding box collisions
 
         # If there's a hit detected, then we calculate the position from the centre of the sprite to the
         # collision point. This gives us the angle of impact from the horizontal.
         if isHit:
+            ic('hit')
             self.angle = math.atan2((hity - self.midy), (self.midx - hitx))
-            self.angle %= 2*math.pi
+            ic(math.degrees(self.angle), hitx, hity, self.midx, self.midy)
             self.angle -= math.pi
+            ic(math.degrees(self.angle))
             self._nextpos()
 
         # Check and see if you hit the side of the play area

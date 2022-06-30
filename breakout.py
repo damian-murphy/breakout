@@ -12,6 +12,7 @@ from wall import Wall, Block
 from debug import DebugBox
 from pygame.locals import *
 import math
+from icecream import install, ic
 
 # Setup
 width, height = 800, 600
@@ -24,7 +25,10 @@ keys = [False, False]
 bgcolour = (0, 0, 0)
 WHITE = (255, 255, 255)
 DEBUG = True
-
+# Enable and install icecream for debugging
+if DEBUG:
+    install()
+    ic.enable()
 
 def init_game():
     pygame.init()

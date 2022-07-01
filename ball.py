@@ -49,7 +49,10 @@ class Ball(pygame.sprite.Sprite):
             ic('hit')
             self.angle = math.atan2((hity - self.midy), (self.midx - hitx))
             ic(math.degrees(self.angle), hitx, hity, self.midx, self.midy)
-            self.angle -= math.pi
+            # Add 2pi radians to the angle if it's less than zero
+            # to keep us in the positive numbers.
+            if self.angle < 0:
+                self.angle += 2*math.pi
             ic(math.degrees(self.angle))
             self._nextpos()
 

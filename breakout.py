@@ -29,6 +29,12 @@ DEBUG = True
 if DEBUG:
     install()
     ic.enable()
+    ic.configureOutput(prefix='Debug| ')
+
+# In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
+# So, traditionally north or 0 degress is vertically up, now it's right or East.
+# And it's all mirrored, due to 0,0 being at the top left not bottom left.
+# So 90 is up, 270 is down, 180 is left, 0 is right.
 
 def init_game():
     pygame.init()

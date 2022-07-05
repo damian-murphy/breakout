@@ -5,7 +5,7 @@ from icecream import ic
 
 WHITE = (255, 255, 255)
 SPEED = 5
-INIT_ANGLE = 45
+INIT_ANGLE = 315
 
 
 class Ball(pygame.sprite.Sprite):
@@ -29,14 +29,25 @@ class Ball(pygame.sprite.Sprite):
         self.angle = math.radians(INIT_ANGLE)
         self.max_x = screenx - image.get_width()
         self.max_y = screeny - image.get_height()
-        self.vx, self.vy = self.speed, -self.speed
-        self.midx = image.get_width() / 2
-        self.midy = image.get_height() / 2
+        self.vx, self.vy = self.speed, self.speed
 
     def _nextpos(self):
         self.rect.x = self.rect.x + (self.vx * math.cos(self.angle))
         self.rect.y = self.rect.y + (self.vy * math.sin(self.angle))
         ic(self.rect.x, self.rect.y, math.degrees(self.angle), self.vx, self.vy)
+
+    def _reflection(self, hitx, hity):
+        ic('REFLECTION')
+        midx = self.rect.centerx - self.rect.topleft[0]
+        midy = self.rect.centery - self.rect.topleft[1]
+        self.angle = math.atan2((hity - midy), (midx - hitx))
+        ic(math.degrees(self.angle), hitx, hity, midx, midy)
+        # Add 2pi radians to the angle if it's less than zero
+        # to keep us in the positive numbers.
+        if self.angle < 0:
+            self.angle += 2 * math.pi
+        ic(math.degrees(self.angle))
+        self._nextpos()
 
     def move(self, hitx=0, hity=0, isHit=False):
         # Keep the ball inside the play area
@@ -47,32 +58,32 @@ class Ball(pygame.sprite.Sprite):
         # collision point. This gives us the angle of impact from the horizontal.
         if isHit:
             ic('hit')
-            self.angle = math.atan2((hity - self.midy), (self.midx - hitx))
-            ic(math.degrees(self.angle), hitx, hity, self.midx, self.midy)
-            # Add 2pi radians to the angle if it's less than zero
-            # to keep us in the positive numbers.
-            if self.angle < 0:
-                self.angle += 2*math.pi
-            ic(math.degrees(self.angle))
-            self._nextpos()
+            self._reflection(hitx, hity)
 
         # Check and see if you hit the side of the play area
         elif self.rect.x < 5:
+            ic('LHS')
             self.rect.x = 5
-            self.vx *= -1
-            self._nextpos()
+            # Remember, collisions using masks return the colliding point relative to the 0,0
+            # point of sprite1 (the ball in this case), so we need to calculate the
+            # relative y from the absolute y we're using as it's the screen edge not a sprite we hit
+            # OK?
+            self._reflection(hitx=0, hity=(self.rect.midleft[1] - self.rect.topleft[1]))
         elif self.rect.x > self.max_x:
             self.rect.x = self.max_x - 5
-            self.vx *= -1
-            self._nextpos()
+            ic('RHS')
+            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
+                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
         elif self.rect.y < 5:
             self.rect.y = 5
-            self.vy *= -1
-            self._nextpos()
+            ic('ROOF')
+            self._reflection(hitx=(self.rect.topleft[0] - self.rect.midtop[0]),
+                             hity=(self.rect.topleft[1] - self.rect.midtop[1]))
         elif self.rect.y > self.max_y:
             self.rect.y = self.max_y - 5
-            self.vy *= -1
-            self._nextpos()
+            ic('FLOOR', self.rect.y, self.rect.x)
+            self._reflection(hitx=(self.rect.topleft[0] - self.rect.midbottom[0]),
+                             hity=(self.rect.midbottom[1] - self.rect.topleft[1]))
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y

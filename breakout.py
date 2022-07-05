@@ -174,25 +174,25 @@ def main():
         # Let's do all the collision logic here, then we just tell the objects
         # what went down during the frame.
         # First, the bat and any ball
-        if pygame.sprite.spritecollide(player1, balls, False, pygame.sprite.collide_mask):
-            try:
-                (hitx, hity) = pygame.sprite.collide_mask(player1, the_ball)
-                the_ball.move(hitx, hity, isHit=True)
-            except TypeError:
-                the_ball.move()
-        # Now, see if a ball hit any wall block
-        elif pygame.sprite.spritecollide(the_ball, wall, False, pygame.sprite.collide_mask):
-            try:
-                for b in iter(wall.sprites()):
-                    if b.rect.colliderect(the_ball.rect):
-                        (hitx, hity) = pygame.sprite.collide_mask(the_ball, b)
-                        wall.remove(b)
-                        the_ball.move(hitx, hity, isHit=True)
-            except TypeError:
-                the_ball.move()
-        else:
+        # if pygame.sprite.spritecollide(player1, balls, False, pygame.sprite.collide_mask):
+        #     try:
+        #         (hitx, hity) = pygame.sprite.collide_mask(player1, the_ball)
+        #         the_ball.move(hitx, hity, isHit=True)
+        #     except TypeError:
+        #         the_ball.move()
+        # # Now, see if a ball hit any wall block
+        # elif pygame.sprite.spritecollide(the_ball, wall, False, pygame.sprite.collide_mask):
+        #     try:
+        #         for b in iter(wall.sprites()):
+        #             if b.rect.colliderect(the_ball.rect):
+        #                 (hitx, hity) = pygame.sprite.collide_mask(the_ball, b)
+        #                 wall.remove(b)
+        #                 the_ball.move(hitx, hity, isHit=True)
+        #     except TypeError:
+        #         the_ball.move()
+        # else:
             # No collision, so move normally.
-            the_ball.move()
+        the_ball.move()
 
         # Update the sprites
         players.clear(screen, bgScreen)

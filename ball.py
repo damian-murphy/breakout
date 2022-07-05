@@ -77,7 +77,7 @@ class Ball(pygame.sprite.Sprite):
         elif self.rect.y < 5:
             self.rect.y = 5
             ic('ROOF')
-            self._reflection(hitx=(self.rect.topleft[0] - self.rect.midtop[0]),
+            self._reflection(hitx=(self.rect.midtop[0] - self.rect.topleft[0]),
                              hity=(self.rect.topleft[1] - self.rect.midtop[1]))
         elif self.rect.y > self.max_y:
             self.rect.y = self.max_y - 5

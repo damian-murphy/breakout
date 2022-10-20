@@ -54,8 +54,9 @@ class Ball(pygame.sprite.Sprite):
         # Anything else is a sprite collision and is handled with collision maps.
         # Here we'll also take care of the bounding box collisions
 
-        # If there's a hit detected, then we calculate the position from the centre of the sprite to the
-        # collision point. This gives us the angle of impact from the horizontal.
+        # If there's a hit detected, then we calculate the position from the
+        # centre of the sprite to the collision point.
+        # This gives us the angle of impact from the horizontal.
         if isHit:
             ic('hit')
             self._reflection(hitx, hity)

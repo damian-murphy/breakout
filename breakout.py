@@ -31,10 +31,12 @@ if DEBUG:
     ic.enable()
     ic.configureOutput(prefix='Debug| ')
 
+
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
 # So, traditionally north or 0 degress is vertically up, now it's right or East.
 # And it's all mirrored, due to 0,0 being at the top left not bottom left.
 # So 90 is up, 270 is down, 180 is left, 0 is right.
+
 
 def init_game():
     pygame.init()
@@ -103,7 +105,8 @@ def main():
     # So the we have something to put under moving things
     screen.fill(0)
     # Get the dimensions of the BG image, so we can try and centre it somewhat
-    bgx, bgy = int(width / 2) - int(background.get_width() / 2), int(height / 2) - int(background.get_height() / 2)
+    bgx, bgy = int(width / 2) - int(background.get_width() / 2), int(height / 2) \
+                - int(background.get_height() / 2)
     screen.blit(background, [bgx, bgy])
     bgScreen = pygame.Surface((width, height))
     bgScreen.blit(background, [bgx, bgy])
@@ -112,11 +115,12 @@ def main():
     wall = pygame.sprite.Group()
     for y in range(10, 5 * brick.get_height(), brick.get_height()):
         for x in range(round(width / brick.get_width() - 1)):
-            wall.add(Block(brick, brick.get_width(), brick.get_height(), (10 + (x * (brick.get_width() + 1))), y))
+            wall.add(Block(brick, brick.get_width(), brick.get_height(),
+                           (10 + (x * (brick.get_width() + 1))), y))
 
     # Set the player sprite starting position
     # Draw our player
-    #player1.rect.x = 390
+    # player1.rect.x = 390
     player1.rect.x = 10
     player1.rect.y = 560
     the_ball.rect.x = 300
@@ -163,7 +167,7 @@ def main():
             else:
                 player1.moveLeft(10)
         elif keys[1]:
-            if (player1.getRightHandSide() > (width-10)) and (player1.getRightHandSide() < width):
+            if (player1.getRightHandSide() > (width - 10)) and (player1.getRightHandSide() < width):
                 player1.moveRight(10 - (width - player1.getRightHandSide()))
             elif player1.getRightHandSide() == width or player1.getRightHandSide() > width:
                 player1.moveRight(0)
@@ -191,7 +195,7 @@ def main():
         #     except TypeError:
         #         the_ball.move()
         # else:
-            # No collision, so move normally.
+        # No collision, so move normally.
         the_ball.move()
 
         # Update the sprites
@@ -204,9 +208,12 @@ def main():
         # So, use that debugger object from earlier and print some (hopefully) useful info.
         if (DEBUG):
             debugger.clear(bgcolour)
-            debugmessage = "P {0: >4.0f},{1: >4.0f} B {2: >4.0f},{3: >4.0f} A {4: >4.0f} V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} frames/sec".format(
-                player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y, math.degrees(the_ball.angle), the_ball.vx,
-                the_ball.vy, clock.get_rawtime(), clock.get_fps())
+            debugmessage = "P {0: >4.0f},{1: >4.0f} B {2: >4.0f},{3: >4.0f} A {4: >4.0f} " \
+                           "V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} " \
+                           "frames/sec".format(
+                            player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y,
+                            math.degrees(the_ball.angle), the_ball.vx,
+                            the_ball.vy, clock.get_rawtime(), clock.get_fps())
             debugger.message(debugmessage)
 
 

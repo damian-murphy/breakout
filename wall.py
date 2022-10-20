@@ -1,12 +1,13 @@
 # Wall class
 import pygame
 
-WHITE = (255,255,255)
+WHITE = (255, 255, 255)
+
 
 class Block(pygame.sprite.Sprite):
     # Constructor. Pass in the color of the block,
     # and its x and y position
-    def __init__(self, image, width, height, init_x, init_y ):
+    def __init__(self, image, width, height, init_x, init_y):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
@@ -23,18 +24,17 @@ class Block(pygame.sprite.Sprite):
         self.rect.x = init_x
         self.rect.y = init_y
 
-class Wall():
+
+class Wall:
     # Constructor.
     # Pass in the block image, width and height, also , screen width
     # Returns a list of block objects of wall (num x rows)
-    #WallArray = ()
+    # WallArray = ()
 
     def __init__(self, screen, image, width, height, screen_width, rows):
 
         for y in range(10, rows * height, height):
             for x in range(round(screen_width / width - 1)):
                 screen.blit(image, (10 + (x * (width + 1)), y))
-                #WallArray[xy] = (x,y)
+                # WallArray[xy] = (x,y)
                 # Create a group of sprites to represent the wall
-
-

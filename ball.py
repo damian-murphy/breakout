@@ -1,6 +1,6 @@
-# Ball Object - extends pygame sprite class
-import pygame
+""" Ball Object - extends pygame sprite class """
 import math
+import pygame
 from icecream import ic
 
 WHITE = (255, 255, 255)
@@ -9,7 +9,7 @@ INIT_ANGLE = 315
 
 
 class Ball(pygame.sprite.Sprite):
-    # Constructor. Pass in the x and y position, and an image
+    """ Ball Object Constructor. Pass in the x and y position, and an image"""
     def __init__(self, image, width, height, screenx, screeny):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
@@ -29,12 +29,12 @@ class Ball(pygame.sprite.Sprite):
         self.angle = math.radians(INIT_ANGLE)
         self.max_x = screenx - image.get_width()
         self.max_y = screeny - image.get_height()
-        self.vx, self.vy = self.speed, self.speed
+        self.v_x, self.v_y = self.speed, self.speed
 
     def _nextpos(self):
-        self.rect.x = self.rect.x + (self.vx * math.cos(self.angle))
-        self.rect.y = self.rect.y + (self.vy * math.sin(self.angle))
-        ic(self.rect.x, self.rect.y, math.degrees(self.angle), self.vx, self.vy)
+        self.rect.x = self.rect.x + (self.v_x * math.cos(self.angle))
+        self.rect.y = self.rect.y + (self.v_y * math.sin(self.angle))
+        ic(self.rect.x, self.rect.y, math.degrees(self.angle), self.v_x, self.v_y)
 
     def _reflection(self, hitx, hity):
         ic('REFLECTION')
@@ -49,15 +49,15 @@ class Ball(pygame.sprite.Sprite):
         ic(math.degrees(self.angle))
         self._nextpos()
 
-    def move(self, hitx=0, hity=0, isHit=False):
-        # Keep the ball inside the play area
+    def move(self, hitx=0, hity=0, is_hit=False):
+        """# Keep the ball inside the play area
         # Anything else is a sprite collision and is handled with collision maps.
         # Here we'll also take care of the bounding box collisions
 
         # If there's a hit detected, then we calculate the position from the
         # centre of the sprite to the collision point.
-        # This gives us the angle of impact from the horizontal.
-        if isHit:
+        # This gives us the angle of impact from the horizontal."""
+        if is_hit:
             ic('hit')
             self._reflection(hitx, hity)
 

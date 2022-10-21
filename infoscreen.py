@@ -1,21 +1,24 @@
-# Screen border and overlay for information
-import pygame
+""" Setup the screen border and overlay for information """
 import math
+import pygame
 from icecream import ic
 
-class infoScreen():
+
+class InfoScreen:
+    """ InfoScreen Class:
+        Display the game 'console' - anything that isn't a player graphic
+        """
 
     def __init__(self, image, screenx, screeny):
         # Constructor for console display - anything that isn't a player graphic
-        self.borderImage = image
-        self.screenx = screenx
-        self.screeny = screeny
+        self.border_image = image
+        self.screen_x = screenx
+        self.screen_y = screeny
 
     def border(self):
+        """ Draw or update the border area """
         return 0
 
-    def scoreBoard(self):
+    def scoreboard(self):
+        """ Draw or update the scoreboard & lives """
         return 0
-
-    
-        

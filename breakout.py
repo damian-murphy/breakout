@@ -9,7 +9,7 @@ import math
 import sys
 import pygame
 import pygame.freetype
-from pygame.locals import *
+import pygame.locals
 from icecream import install, ic
 from ball import Ball
 from wall import Wall, Block

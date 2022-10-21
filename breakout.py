@@ -10,22 +10,15 @@ import sys
 import pygame
 import pygame.freetype
 import pygame.locals
+import pygame.constants
 from icecream import install, ic
+
 from ball import Ball
 from wall import Wall, Block
 from debug import DebugBox
 
 
 # Setup
-width, height = 800, 600
-bat = pygame.image.load("graphics/images/bat.png")
-brick = pygame.image.load("graphics/images/brick.png")
-ball_img = pygame.image.load("graphics/images/ball.png")
-background = pygame.image.load("graphics/images/sky_bg1.jpg")
-playerpos = [390, 560]
-keys = [False, False]
-bgcolour = (0, 0, 0)
-WHITE = (255, 255, 255)
 DEBUG = True
 # Enable and install icecream for debugging
 if DEBUG:
@@ -41,8 +34,21 @@ if DEBUG:
 
 
 def init_game():
-    """ Initialise pygame """
+    """ Initialise game settings """
     pygame.init()
+
+    global width, height, bat, brick, ball_img, background, playerpos, keys, bgcolour, WHITE
+
+    width, height = 800, 600
+    bat = pygame.image.load("graphics/images/bat.png")
+    brick = pygame.image.load("graphics/images/brick.png")
+    ball_img = pygame.image.load("graphics/images/ball.png")
+    background = pygame.image.load("graphics/images/sky_bg1.jpg")
+    playerpos = [390, 560]
+    keys = [False, False]
+    bgcolour = (0, 0, 0)
+    WHITE = (255, 255, 255)
+
 
 
 class Player(pygame.sprite.Sprite):
@@ -224,8 +230,8 @@ def main():
                            "V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} " \
                            "frames/sec".format(
                             player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y,
-                            math.degrees(the_ball.angle), the_ball.vx,
-                            the_ball.vy, clock.get_rawtime(), clock.get_fps())
+                            math.degrees(the_ball.angle), the_ball.v_x,
+                            the_ball.v_y, clock.get_rawtime(), clock.get_fps())
             debugger.message(debugmessage)
 
 

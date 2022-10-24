@@ -10,43 +10,49 @@ INIT_ANGLE = 315
 
 class Ball(pygame.sprite.Sprite):
     """ Ball Object Constructor. Pass in the x and y position, and an image"""
+
     def __init__(self, image, width, height, screenx, screeny):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
-        # Create an image of the block, and fill it with a color.
-        # This could also be an image loaded from the disk.
-        self.image = pygame.Surface([width, height])
-        self.image = image
-        self.image.set_colorkey(WHITE)
+        # Dict to contain the attributes of the ball object
+        self.attribs = {}
 
-        # Fetch the rectangle object that has the dimensions of the image
-        # Update the position of this object by setting the values of rect.x and rect.y
-        self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
+        # Now, fill in the values using CONSTANTS from top of file or passed in params
+        self.attribs = {'surface': pygame.Surface([width, height]),
+                        'image': image,
+                        'rect': image.get_rect(),
+                        'mask': pygame.mask.from_surface(image),
+                        'speed': SPEED,
+                        'max_x': screenx - image.get_width(),
+                        'max_y': screeny - image.get_height(),
+                        'v_x': SPEED,
+                        'v_y': SPEED,
+                        'angle': math.radians(INIT_ANGLE)
+                        }
 
-        self.speed = SPEED
-        self.angle = math.radians(INIT_ANGLE)
-        self.max_x = screenx - image.get_width()
-        self.max_y = screeny - image.get_height()
-        self.v_x, self.v_y = self.speed, self.speed
+        # Set the colour key to WHITE
+        self.attribs['image'].set_colorkey(WHITE)
 
     def _nextpos(self):
-        self.rect.x = self.rect.x + (self.v_x * math.cos(self.angle))
-        self.rect.y = self.rect.y + (self.v_y * math.sin(self.angle))
-        ic(self.rect.x, self.rect.y, math.degrees(self.angle), self.v_x, self.v_y)
+        self.attribs['rect'].x = self.attribs['rect'].x \
+                                 + (self.attribs['v_x'] * math.cos(self.attribs['angle']))
+        self.attribs['rect'].y = self.attribs['rect'].y + (self.attribs['v_y']
+                                                           * math.sin(self.attribs['angle']))
+        ic(self.attribs['rect'].x, self.attribs['rect'].y,
+           math.degrees(self.attribs['angle']), self.attribs['v_x'], self.attribs['v_y'])
 
     def _reflection(self, hitx, hity):
         ic('REFLECTION')
-        midx = self.rect.centerx - self.rect.topleft[0]
-        midy = self.rect.centery - self.rect.topleft[1]
-        self.angle = math.atan2((hity - midy), (midx - hitx))
-        ic(math.degrees(self.angle), hitx, hity, midx, midy)
+        midx = self.attribs['rect'].centerx - self.attribs['rect'].topleft[0]
+        midy = self.attribs['rect'].centery - self.attribs['rect'].topleft[1]
+        self.attribs['angle'] = math.atan2((hity - midy), (midx - hitx))
+        ic(math.degrees(self.attribs['angle']), hitx, hity, midx, midy)
         # Add 2pi radians to the angle if it's less than zero
         # to keep us in the positive numbers.
-        if self.angle < 0:
-            self.angle += 2 * math.pi
-        ic(math.degrees(self.angle))
+        if self.attribs['angle'] < 0:
+            self.attribs['angle'] += 2 * math.pi
+        ic(math.degrees(self.attribs['angle']))
         self._nextpos()
 
     def move(self, hitx=0, hity=0, is_hit=False):
@@ -89,3 +95,7 @@ class Ball(pygame.sprite.Sprite):
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y
             self._nextpos()
+
+    def setimage(self, image):
+        """ Change the image used for the ball """
+        self.attribs['image'] = image

@@ -10,7 +10,7 @@ import sys
 import pygame
 import pygame.freetype
 import pygame.locals
-import pygame.constants
+from pygame.constants import *
 from icecream import install, ic
 
 from ball import Ball
@@ -230,8 +230,8 @@ def main():
                            "V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} " \
                            "frames/sec".format(
                             player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y,
-                            math.degrees(the_ball.angle), the_ball.v_x,
-                            the_ball.v_y, clock.get_rawtime(), clock.get_fps())
+                            math.degrees(the_ball.angle()), the_ball.v_x(),
+                            the_ball.v_y(), clock.get_rawtime(), clock.get_fps())
             debugger.message(debugmessage)
 
 

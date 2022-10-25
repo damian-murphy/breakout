@@ -5,13 +5,13 @@ from icecream import ic
 
 WHITE = (255, 255, 255)
 SPEED = 5
-INIT_ANGLE = 315
+INIT_ANGLE = 45
 
 
 class Ball(pygame.sprite.Sprite):
     """ Ball Object Constructor. Pass in the x and y position, and an image"""
 
-    def __init__(self, image, width, height, screenx, screeny):
+    def __init__(self, image, screenx, screeny):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
@@ -20,12 +20,15 @@ class Ball(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
 
+        my_width = image.get_width()
+        my_height = image.get_height()
+
         # Now, fill in the values using CONSTANTS from top of file or passed in params
-        self._attribs = {'surface': pygame.Surface([width, height]),
+        self._attribs = {'surface': pygame.Surface([my_width, my_height]),
                         'mask': pygame.mask.from_surface(image),
                         'speed': SPEED,
-                        'max_x': screenx - image.get_width(),
-                        'max_y': screeny - image.get_height(),
+                        'max_x': screenx - my_width,
+                        'max_y': screeny - my_height,
                         'v_x': SPEED,
                         'v_y': SPEED,
                         'angle': math.radians(INIT_ANGLE)
@@ -46,7 +49,7 @@ class Ball(pygame.sprite.Sprite):
         ic('REFLECTION')
         midx = self.rect.centerx - self.rect.topleft[0]
         midy = self.rect.centery - self.rect.topleft[1]
-        self._attribs['angle'] = math.atan2((hity - midy), (midx - hitx))
+        self._attribs['angle'] = math.atan2((abs(hity) - midy), (midx - hitx))
         ic(math.degrees(self._attribs['angle']), hitx, hity, midx, midy)
         # Add 2pi radians to the angle if it's less than zero
         # to keep us in the positive numbers.
@@ -84,13 +87,13 @@ class Ball(pygame.sprite.Sprite):
         elif self.rect.y < 5:
             self.rect.y = 5
             ic('ROOF')
-            self._reflection(hitx=(self.rect.midtop[0] - self.rect.topleft[0]),
-                             hity=(self.rect.topleft[1] - self.rect.midtop[1]))
+            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
+                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
         elif self.rect.y > self._attribs['max_y']:
             self.rect.y = self._attribs['max_y'] - 5
             ic('FLOOR', self.rect.y, self.rect.x)
-            self._reflection(hitx=(self.rect.topleft[0] - self.rect.midbottom[0]),
-                             hity=(self.rect.midbottom[1] - self.rect.topleft[1]))
+            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
+                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y

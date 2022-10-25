@@ -103,7 +103,7 @@ def main():
     player1 = Player(BAT_IMG, BAT_IMG.get_width(), BAT_IMG.get_height())
     players = pygame.sprite.GroupSingle(player1)
     # Create the ball, a moving sprite.
-    the_ball = Ball(BALL_IMG, BALL_IMG.get_width(), BALL_IMG.get_height(), GAME_WIDTH, GAME_HEIGHT)
+    the_ball = Ball(BALL_IMG, GAME_WIDTH, GAME_HEIGHT)
 
     # List to contain keypresses
     keys_pressed = [False, False]

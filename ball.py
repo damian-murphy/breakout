@@ -104,9 +104,9 @@ class Ball(pygame.sprite.Sprite):
         """ Set the X velocity if passed and return the current value """
         if v_x is None:
             return self._attribs['v_x']
-        else:
-            self._attribs['v_x'] = v_x
-            return self._attribs['v_x']
+        # else:
+        self._attribs['v_x'] = v_x
+        return self._attribs['v_x']
 
     def v_y(self, v_y=None):
         """ Set the Y velocity if passed and return the current value """

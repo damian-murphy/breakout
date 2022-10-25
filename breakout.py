@@ -10,7 +10,6 @@ import sys
 import pygame
 import pygame.freetype
 import pygame.locals
-from pygame.constants import *
 from icecream import install, ic
 
 from ball import Ball
@@ -162,9 +161,9 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == K_z:
+                if event.key == pygame.K_z:
                     keys[0] = True
-                elif event.key == K_x:
+                elif event.key == pygame.K_x:
                     keys[1] = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_z:
@@ -231,7 +230,7 @@ def main():
                            "frames/sec".format(
                             player1.rect.x, player1.rect.y, the_ball.rect.x, the_ball.rect.y,
                             math.degrees(the_ball.angle()), the_ball.v_x(),
-                            the_ball.v_y(), clock.get_rawtime(), clock.get_fps())
+                the_ball.v_y(), clock.get_rawtime(), clock.get_fps())
             debugger.message(debugmessage)
 
 

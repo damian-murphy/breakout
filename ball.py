@@ -100,21 +100,21 @@ class Ball(pygame.sprite.Sprite):
         """ Change the image used for the ball """
         self._attribs['image'] = image
 
-    def v_x(self, vx=None):
+    def v_x(self, v_x=None):
         """ Set the X velocity if passed and return the current value """
-        if vx is None:
+        if v_x is None:
             return self._attribs['v_x']
         else:
-            self._attribs['v_x'] = vx
+            self._attribs['v_x'] = v_x
             return self._attribs['v_x']
 
-    def v_y(self, vy=None):
+    def v_y(self, v_y=None):
         """ Set the Y velocity if passed and return the current value """
-        if vy is None:
+        if v_y is None:
             return self._attribs['v_y']
-        else:
-            self._attribs['v_y'] = vy
-            return self._attribs['v_y']
+        # else:
+        self._attribs['v_y'] = v_y
+        return self._attribs['v_y']
 
 
     def angle(self, angle=None):
@@ -122,6 +122,6 @@ class Ball(pygame.sprite.Sprite):
             Always returns the angle value after changing """
         if angle is None:
             return self._attribs['angle']
-        else:
-            self._attribs['angle'] = angle
-            return self._attribs['angle']
+        # else:
+        self._attribs['angle'] = angle
+        return self._attribs['angle']

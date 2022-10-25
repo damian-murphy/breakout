@@ -13,7 +13,7 @@ import pygame.locals
 from icecream import install, ic
 
 from ball import Ball
-from wall import Wall, Block
+from wall import Block
 from debug import DebugBox
 
 
@@ -25,6 +25,15 @@ if DEBUG:
     ic.enable()
     ic.configureOutput(prefix='Debug| ')
 
+# Some Constants, could be settings taken from a file later
+GAME_WIDTH, GAME_HEIGHT = 800, 600
+BAT_IMG = pygame.image.load("graphics/images/bat.png")
+BRICK_IMG = pygame.image.load("graphics/images/brick.png")
+BALL_IMG = pygame.image.load("graphics/images/ball.png")
+BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
+INIT_PLAYERPOS = [390, 560]
+BGCOLOUR = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
 # So, traditionally north or 0 degress is vertically up, now it's right or East.
@@ -35,20 +44,6 @@ if DEBUG:
 def init_game():
     """ Initialise game settings """
     pygame.init()
-
-    global GAME_WIDTH, GAME_HEIGHT, BAT_IMG, BRICK_IMG, BALL_IMG,\
-        BACKGROUND_IMG, INIT_PLAYERPOS, BGCOLOUR, WHITE
-
-    GAME_WIDTH, GAME_HEIGHT = 800, 600
-    BAT_IMG = pygame.image.load("graphics/images/bat.png")
-    BRICK_IMG = pygame.image.load("graphics/images/brick.png")
-    BALL_IMG = pygame.image.load("graphics/images/ball.png")
-    BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
-    INIT_PLAYERPOS = [390, 560]
-
-    BGCOLOUR = (0, 0, 0)
-    WHITE = (255, 255, 255)
-
 
 
 class Player(pygame.sprite.Sprite):

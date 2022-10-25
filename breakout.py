@@ -36,16 +36,17 @@ def init_game():
     """ Initialise game settings """
     pygame.init()
 
-    global width, height, bat, brick, ball_img, background, playerpos, keys, bgcolour, WHITE
+    global GAME_WIDTH, GAME_HEIGHT, BAT_IMG, BRICK_IMG, BALL_IMG,\
+        BACKGROUND_IMG, INIT_PLAYERPOS, BGCOLOUR, WHITE
 
-    width, height = 800, 600
-    bat = pygame.image.load("graphics/images/bat.png")
-    brick = pygame.image.load("graphics/images/brick.png")
-    ball_img = pygame.image.load("graphics/images/ball.png")
-    background = pygame.image.load("graphics/images/sky_bg1.jpg")
-    playerpos = [390, 560]
-    keys = [False, False]
-    bgcolour = (0, 0, 0)
+    GAME_WIDTH, GAME_HEIGHT = 800, 600
+    BAT_IMG = pygame.image.load("graphics/images/bat.png")
+    BRICK_IMG = pygame.image.load("graphics/images/brick.png")
+    BALL_IMG = pygame.image.load("graphics/images/ball.png")
+    BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
+    INIT_PLAYERPOS = [390, 560]
+
+    BGCOLOUR = (0, 0, 0)
     WHITE = (255, 255, 255)
 
 
@@ -87,7 +88,7 @@ class Player(pygame.sprite.Sprite):
 
 def clear_callback(surf, rect):
     """ Callback function to reset the screen to background, wiping the sprite """
-    surf.fill(bgcolour, rect)
+    surf.fill(BGCOLOUR, rect)
 
 
 def main():
@@ -100,38 +101,41 @@ def main():
     # about screen flicker and getting things done in 1/50sec
     clock = pygame.time.Clock()
     # Create the display surface
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     # Set the caption on the Window
     pygame.display.set_caption("Breakout!")
     # Create player1, a controlled sprite
-    player1 = Player(bat, bat.get_width(), bat.get_height())
+    player1 = Player(BAT_IMG, BAT_IMG.get_width(), BAT_IMG.get_height())
     players = pygame.sprite.GroupSingle(player1)
     # Create the ball, a moving sprite.
-    the_ball = Ball(ball_img, ball_img.get_width(), ball_img.get_height(), width, height)
+    the_ball = Ball(BALL_IMG, BALL_IMG.get_width(), BALL_IMG.get_height(), GAME_WIDTH, GAME_HEIGHT)
+
+    # List to contain keypresses
+    keys_pressed = [False, False]
 
     # Group of balls.
     balls = pygame.sprite.Group(the_ball)
 
     # If we're running in debug mode, then setup the debugger. Otherwise, eh, don't.
     if DEBUG:
-        debugger = DebugBox(screen, height)
+        debugger = DebugBox(screen, GAME_HEIGHT)
 
     # Blank screen & create background screen as well
     # So the we have something to put under moving things
     screen.fill(0)
     # Get the dimensions of the BG image, so we can try and centre it somewhat
-    bgx, bgy = int(width / 2) - int(background.get_width() / 2), int(height / 2) \
-                - int(background.get_height() / 2)
-    screen.blit(background, [bgx, bgy])
-    bg_screen = pygame.Surface((width, height))
-    bg_screen.blit(background, [bgx, bgy])
+    bgx, bgy = int(GAME_WIDTH / 2) - int(BACKGROUND_IMG.get_width() / 2), int(GAME_HEIGHT / 2) \
+               - int(BACKGROUND_IMG.get_height() / 2)
+    screen.blit(BACKGROUND_IMG, [bgx, bgy])
+    bg_screen = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+    bg_screen.blit(BACKGROUND_IMG, [bgx, bgy])
 
     # Create the Wall of blocks
     wall = pygame.sprite.Group()
-    for y_pos in range(10, 5 * brick.get_height(), brick.get_height()):
-        for x_pos in range(round(width / brick.get_width() - 1)):
-            wall.add(Block(brick, brick.get_width(), brick.get_height(),
-                           (10 + (x_pos * (brick.get_width() + 1))), y_pos))
+    for y_pos in range(10, 5 * BRICK_IMG.get_height(), BRICK_IMG.get_height()):
+        for x_pos in range(round(GAME_WIDTH / BRICK_IMG.get_width() - 1)):
+            wall.add(Block(BRICK_IMG, BRICK_IMG.get_width(), BRICK_IMG.get_height(),
+                           (10 + (x_pos * (BRICK_IMG.get_width() + 1))), y_pos))
 
     # Set the player sprite starting position
     # Draw our player
@@ -162,31 +166,31 @@ def main():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
-                    keys[0] = True
+                    keys_pressed[0] = True
                 elif event.key == pygame.K_x:
-                    keys[1] = True
+                    keys_pressed[1] = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_z:
-                    keys[0] = False
+                    keys_pressed[0] = False
                 elif event.key == pygame.K_x:
-                    keys[1] = False
+                    keys_pressed[1] = False
 
         # FIX (https://github.com/damian-murphy/breakout/issues/2)
         # Get the bat position, check if it's at the edge, adjust accordingly.
         # and make sure we don't move outside the play area, or the bat will disappear off screen
-        if keys[0]:
+        if keys_pressed[0]:
             if (player1.get_left_hand_side() < 10) & (player1.get_left_hand_side() > 0):
                 player1.moveleft(10 - player1.get_left_hand_side())
             elif player1.get_left_hand_side() == 0 or player1.get_left_hand_side() < 0:
                 player1.moveleft(0)
             else:
                 player1.moveleft(10)
-        elif keys[1]:
-            if (player1.get_right_hand_side() > (width - 10)) \
-                    and (player1.get_right_hand_side() < width):
-                player1.moveright(10 - (width - player1.get_right_hand_side()))
-            elif player1.get_right_hand_side() == width \
-                    or player1.get_right_hand_side() > width:
+        elif keys_pressed[1]:
+            if (player1.get_right_hand_side() > (GAME_WIDTH - 10)) \
+                    and (player1.get_right_hand_side() < GAME_WIDTH):
+                player1.moveright(10 - (GAME_WIDTH - player1.get_right_hand_side()))
+            elif player1.get_right_hand_side() == GAME_WIDTH \
+                    or player1.get_right_hand_side() > GAME_WIDTH:
                 player1.moveright(0)
             else:
                 player1.moveright(10)
@@ -224,7 +228,7 @@ def main():
         wall.draw(screen)
         # So, use that debugger object from earlier and print some (hopefully) useful info.
         if DEBUG:
-            debugger.clear(bgcolour)
+            debugger.clear(BGCOLOUR)
             debugmessage = "P {0: >4.0f},{1: >4.0f} B {2: >4.0f},{3: >4.0f} A {4: >4.0f} " \
                            "V {5: >4.0f},{6: >4.0f} FT {7: >4.0f}ms FR {8: >4.0f} " \
                            "frames/sec".format(

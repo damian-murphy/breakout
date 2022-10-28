@@ -1,0 +1,5 @@
+[MASTER]
+# Allow loading of arbitrary C extensions. Extensions are imported into the
+# active Python interpreter and may run arbitrary code.
+# Enable this as pygame requires it to work
+unsafe-load-any-extension=yes

@@ -1,18 +1,19 @@
-# Wall class
+""" Wall Class - The wall as a collection of brick objects """
 import pygame
 
-WHITE = (255,255,255)
+WHITE = (255, 255, 255)
+
 
 class Block(pygame.sprite.Sprite):
-    # Constructor. Pass in the color of the block,
-    # and its x and y position
-    def __init__(self, image, width, height, init_x, init_y ):
+    """ block: pass in the colour of the block, and it's x,y position """
+
+    def __init__(self, image, init_x, init_y):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
         # Create an image of the block, and fill it with a color.
         # This could also be an image loaded from the disk.
-        self.image = pygame.Surface([width, height])
+        self.image = pygame.Surface([image.get_width(), image.get_height()])
         self.image = image
         self.image.set_colorkey(WHITE)
 
@@ -23,18 +24,33 @@ class Block(pygame.sprite.Sprite):
         self.rect.x = init_x
         self.rect.y = init_y
 
-class Wall():
-    # Constructor.
-    # Pass in the block image, width and height, also , screen width
-    # Returns a list of block objects of wall (num x rows)
-    #WallArray = ()
+        self._attribs = {
+            'health': 1
+        }
 
-    def __init__(self, screen, image, width, height, screen_width, rows):
+    def setimage(self, image):
+        """ Set the block image to 'image' """
+        self.image = image
 
-        for y in range(10, rows * height, height):
-            for x in range(round(screen_width / width - 1)):
-                screen.blit(image, (10 + (x * (width + 1)), y))
-                #WallArray[xy] = (x,y)
-                # Create a group of sprites to represent the wall
+    def hit(self):
+        """ Brick loses 1 health on hit,
+        Allows us to have blocks that need more than one hit to destroy.
+        Return the health left """
+
+        self._attribs['health'] -= 1
+        return self._attribs['health']
 
 
+# class Wall:
+#     """    # Constructor.
+#     # Pass in the block image, width and height, also , screen width
+#     # Returns a list of block objects of wall (num x rows)
+#     """
+#
+#     def __init__(self, screen, image, width, height, screen_width, rows):
+#
+#         for y_pos in range(10, rows * height, height):
+#             for x_pos in range(round(screen_width / width - 1)):
+#                 screen.blit(image, (10 + (x_pos * (width + 1)), y_pos))
+#                 # WallArray[xy] = (x,y)
+#                 # Create a group of sprites to represent the wall

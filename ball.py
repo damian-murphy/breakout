@@ -49,7 +49,7 @@ class Ball(pygame.sprite.Sprite):
         ic('REFLECTION')
         midx = self.rect.centerx - self.rect.topleft[0]
         midy = self.rect.centery - self.rect.topleft[1]
-        self._attribs['angle'] = math.atan2((abs(hity) - midy), (midx - hitx))
+        self._attribs['angle'] -= math.atan2((abs(hity) - midy), (midx - hitx))
         ic(math.degrees(self._attribs['angle']), hitx, hity, midx, midy)
         # Add 2pi radians to the angle if it's less than zero
         # to keep us in the positive numbers.

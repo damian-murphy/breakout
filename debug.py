@@ -13,7 +13,7 @@ DEBUGCOLOUR = (255, 255, 255)
 class DebugBox:
     """ Debugbox class to show debug info"""
     def __init__(self, screen, height, colour=DEBUGCOLOUR):
-        self.myfont = pygame.freetype.SysFont(pygame.font.get_default_font(), 18)
+        self.myfont = pygame.freetype.SysFont(pygame.font.get_default_font(), 14)
         self.text = "Debug: "
         self.colour = colour
         self.tsurf, self.trect = self.myfont.render(self.text, self.colour)
@@ -24,7 +24,7 @@ class DebugBox:
     def message(self, text):
         """ Show a message in the debug box """
         self.text = "Debug: " + text
-        self.tsurf, self.trect = self.myfont.render(self.text + text, self.colour)
+        self.tsurf, self.trect = self.myfont.render(self.text, self.colour)
         self.myscreen.blit(self.tsurf, self.trect)
 
     def clear(self, bgcolour):

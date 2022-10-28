@@ -1,7 +1,4 @@
 """ Setup the screen border and overlay for information """
-import math
-import pygame
-from icecream import ic
 
 
 class InfoScreen:

@@ -31,7 +31,9 @@ class Ball(pygame.sprite.Sprite):
                         'max_y': screeny - my_height,
                         'v_x': SPEED,
                         'v_y': SPEED,
-                        'angle': math.radians(INIT_ANGLE)
+                        'angle': math.radians(INIT_ANGLE),
+                        'health': 1,
+                        'primary': True
                          }
 
         # Set the colour key to WHITE
@@ -128,3 +130,20 @@ class Ball(pygame.sprite.Sprite):
         # else:
         self._attribs['angle'] = angle
         return self._attribs['angle']
+
+    def hit(self):
+        """ Hit/Life counter loses 1 health on hit,
+        Allows us to have blocks that need more than one hit to destroy.
+        Return the health left
+        For the primary ball, this does nothing, just allows for standard procedures elsewhere """
+
+        if not self._attribs['primary']:
+            self._attribs['health'] -= 1
+
+        return self._attribs['health']
+
+    def is_primary(self):
+        """ Return value of primary attrib.
+        :returns True if this is the original primary ball, otherwise False """
+
+        return self._attribs['primary']

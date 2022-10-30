@@ -186,7 +186,7 @@ def main():
     while 1:
 
         # Limit to 60 frames per second. Call this once per frame only.
-        clock.tick(60)
+        clock.tick(30)
 
         # Do a screen update, flicker free!
         pygame.display.flip()

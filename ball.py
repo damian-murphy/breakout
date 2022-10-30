@@ -40,24 +40,22 @@ class Ball(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)
 
     def _nextpos(self):
-        self.rect.x = self.rect.x \
-                                  + (self._attribs['v_x'] * math.cos(self._attribs['angle']))
-        self.rect.y = self.rect.y + (self._attribs['v_y']
-                                                             * math.sin(self._attribs['angle']))
+        self.rect.x += self._attribs['v_x'] * math.cos(math.radians(self._attribs['angle'] + 90))
+        self.rect.y -= self._attribs['v_y'] * math.sin(math.radians(self._attribs['angle'] + 90))
         ic(self.rect.x, self.rect.y,
-           math.degrees(self._attribs['angle']), self._attribs['v_x'], self._attribs['v_y'])
+           self._attribs['angle'], self._attribs['v_x'], self._attribs['v_y'])
 
     def _reflection(self, hitx, hity):
         ic('REFLECTION')
         midx = self.rect.centerx - self.rect.topleft[0]
         midy = self.rect.centery - self.rect.topleft[1]
-        self._attribs['angle'] -= math.atan2((abs(hity) - midy), (midx - hitx))
-        ic(math.degrees(self._attribs['angle']), hitx, hity, midx, midy)
+        self._attribs['angle'] -= math.degrees(math.atan2((abs(hity) - midy), (midx - hitx)))
+        ic(self._attribs['angle'], hitx, hity, midx, midy)
         # Add 2pi radians to the angle if it's less than zero
         # to keep us in the positive numbers.
         if self._attribs['angle'] < 0:
-            self._attribs['angle'] += 2 * math.pi
-        ic(math.degrees(self._attribs['angle']))
+            self._attribs['angle'] += 360
+        ic(self._attribs['angle'])
         self._nextpos()
 
     def move(self, hitx=0, hity=0, is_hit=False):
@@ -94,8 +92,8 @@ class Ball(pygame.sprite.Sprite):
         elif self.rect.y > self._attribs['max_y']:
             self.rect.y = self._attribs['max_y'] - 5
             ic('FLOOR', self.rect.y, self.rect.x)
-            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
-                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
+            self._reflection(hitx=(self.rect.center[0] - self.rect.midbottom[0]),
+                             hity=(self.rect.midbottom[1] - self.rect.center[1]))
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y

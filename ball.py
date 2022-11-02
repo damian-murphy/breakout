@@ -25,23 +25,23 @@ class Ball(pygame.sprite.Sprite):
 
         # Now, fill in the values using CONSTANTS from top of file or passed in params
         self._attribs = {'surface': pygame.Surface([my_width, my_height]),
-                        'mask': pygame.mask.from_surface(image),
-                        'speed': SPEED,
-                        'max_x': screenx - my_width,
-                        'max_y': screeny - my_height,
-                        'v_x': SPEED,
-                        'v_y': SPEED,
-                        'angle': math.radians(INIT_ANGLE),
-                        'health': 1,
-                        'primary': True
+                         'mask': pygame.mask.from_surface(image),
+                         'speed': SPEED,
+                         'max_x': screenx - my_width,
+                         'max_y': screeny - my_height,
+                         'v_x': SPEED,
+                         'v_y': SPEED,
+                         'angle': INIT_ANGLE,
+                         'health': 1,
+                         'primary': True
                          }
 
         # Set the colour key to WHITE
         self.image.set_colorkey(WHITE)
 
     def _nextpos(self):
-        self.rect.x += self._attribs['v_x'] * math.cos(math.radians(self._attribs['angle'] + 90))
-        self.rect.y -= self._attribs['v_y'] * math.sin(math.radians(self._attribs['angle'] + 90))
+        self.rect.x += self._attribs['v_x'] * math.cos(math.radians(self._attribs['angle'] - 90))
+        self.rect.y += self._attribs['v_y'] * math.sin(math.radians(self._attribs['angle'] - 90))
         ic(self.rect.x, self.rect.y,
            self._attribs['angle'], self._attribs['v_x'], self._attribs['v_y'])
 
@@ -49,7 +49,7 @@ class Ball(pygame.sprite.Sprite):
         ic('REFLECTION')
         midx = self.rect.centerx - self.rect.topleft[0]
         midy = self.rect.centery - self.rect.topleft[1]
-        self._attribs['angle'] -= math.degrees(math.atan2((abs(hity) - midy), (midx - hitx)))
+        self._attribs['angle'] -= math.degrees(math.atan2(hity, hitx))
         ic(self._attribs['angle'], hitx, hity, midx, midy)
         # Add 2pi radians to the angle if it's less than zero
         # to keep us in the positive numbers.
@@ -118,7 +118,6 @@ class Ball(pygame.sprite.Sprite):
         # else:
         self._attribs['v_y'] = v_y
         return self._attribs['v_y']
-
 
     def angle(self, angle=None):
         """ Return the current angle value or set it if angle= is passed

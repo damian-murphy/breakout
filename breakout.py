@@ -120,17 +120,17 @@ def check_collisions(sprite, group):
     :param group: A group of sprite objects that 'sprite' might have collided with
     :returns Three values, the x and y position of the detected hit and True, otherwise 0,0,False
     """
-    if pygame.sprite.spritecollide(sprite, group, False):
-        try:
-            for sprite_n in iter(group.sprites()):
-                if sprite_n.rect.colliderect(sprite.rect):
-                    (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
-                    if sprite_n.hit() == 0:
-                        group.remove(sprite_n)
-                    return hitx, hity, True
-        except TypeError:
-            return 0, 0, False  # zero, zero, False means no hit
-    return 0, 0, False  # zero, zero, False means no hit
+
+    try:
+        for sprite_n in iter(pygame.sprite.spritecollide(sprite, group, False)):
+            (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
+            if sprite_n.hit() == 0:
+                group.remove(sprite_n)
+                ic(sprite_n)
+            return hitx, hity, True
+    except TypeError:
+        return 0, 0, False  # zero, zero, False means no hit
+
 
 def main():
     """ Main Loop """

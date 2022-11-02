@@ -5,8 +5,7 @@ from icecream import ic
 
 WHITE = (255, 255, 255)
 SPEED = 5
-INIT_ANGLE = 45
-
+INIT_POS = (300, 500)
 
 class Ball(pygame.sprite.Sprite):
     """ Ball Object Constructor. Pass in the x and y position, and an image"""
@@ -19,6 +18,7 @@ class Ball(pygame.sprite.Sprite):
         self._attribs = {}
         self.image = image
         self.rect = self.image.get_rect()
+        self.rect.centerx, self.rect.centery = INIT_POS
 
         my_width = image.get_width()
         my_height = image.get_height()
@@ -29,71 +29,63 @@ class Ball(pygame.sprite.Sprite):
                          'speed': SPEED,
                          'max_x': screenx - my_width,
                          'max_y': screeny - my_height,
-                         'v_x': SPEED,
-                         'v_y': SPEED,
-                         'angle': INIT_ANGLE,
+                         'my_centerx': round(my_width/2),
+                         'my_centery': round(my_height/2),
                          'health': 1,
-                         'primary': True
+                         'primary': True,
+                         'position': pygame.math.Vector2(INIT_POS),
+                         'direction': pygame.math.Vector2(self.rect.centerx + SPEED,
+                                                          -(self.rect.centery - SPEED)).normalize()
                          }
 
         # Set the colour key to WHITE
         self.image.set_colorkey(WHITE)
 
     def _nextpos(self):
-        self.rect.x += self._attribs['v_x'] * math.cos(math.radians(self._attribs['angle'] - 90))
-        self.rect.y += self._attribs['v_y'] * math.sin(math.radians(self._attribs['angle'] - 90))
-        ic(self.rect.x, self.rect.y,
-           self._attribs['angle'], self._attribs['v_x'], self._attribs['v_y'])
+        self._attribs['position'] += self._attribs['direction'] * self._attribs['speed']
+        self.rect.center = round(self._attribs['position'].x), round(self._attribs['position'].y)
+        ic(self.rect.center,
+           self._attribs['position'], self._attribs['direction'], self._attribs['speed'])
 
-    def _reflection(self, hitx, hity):
+    def _reflection(self, force):
+        """ Calculate the next position based on the 'force' or external vector and our own """
         ic('REFLECTION')
-        midx = self.rect.centerx - self.rect.topleft[0]
-        midy = self.rect.centery - self.rect.topleft[1]
-        self._attribs['angle'] -= math.degrees(math.atan2(hity, hitx))
-        ic(self._attribs['angle'], hitx, hity, midx, midy)
-        # Add 2pi radians to the angle if it's less than zero
-        # to keep us in the positive numbers.
-        if self._attribs['angle'] < 0:
-            self._attribs['angle'] += 360
-        ic(self._attribs['angle'])
+        self._attribs['direction'] = self._attribs['direction'].reflect(force)
+        ic(self._attribs['direction'], self._attribs['position'])
         self._nextpos()
 
     def move(self, hitx=0, hity=0, is_hit=False):
-        """# Keep the ball inside the play area
-        # Anything else is a sprite collision and is handled with collision maps.
-        # Here we'll also take care of the bounding box collisions
+        """ Keep the ball inside the play area
+        Anything else is a sprite collision and is handled with collision maps.
+        Here we'll also take care of the bounding box collisions
 
-        # If there's a hit detected, then we calculate the position from the
-        # centre of the sprite to the collision point.
-        # This gives us the angle of impact from the horizontal."""
+        If there's a hit detected, then we calculate the position from the
+        centre of the sprite to the collision point.
+        This gives us the angle of impact from the horizontal."""
         if is_hit:
             ic('hit')
-            self._reflection(hitx, hity)
+            # Force vector is from this hit point towards the centre of the ball.
+            # We bounce with equal and opposite force, directed away
+            # on a line from the hitpoint to the centre of the ball.
+            hitvector = pygame.math.Vector2(((hitx + self._attribs['my_centerx'],
+                                              hity - self._attribs['my_centery']))).normalize()
+            ic(hitvector)
+            self._reflection(hitvector)
 
         # Check and see if you hit the side of the play area
-        elif self.rect.x < 5:
+        elif self.rect.x <= 5:
             ic('LHS')
-            self.rect.x = 5
-            # Remember, collisions using masks return the colliding point relative to the 0,0
-            # point of sprite1 (the ball in this case), so we need to calculate the
-            # relative y from the absolute y we're using as it's the screen edge not a sprite we hit
-            # OK?
-            self._reflection(hitx=0, hity=(self.rect.midleft[1] - self.rect.topleft[1]))
-        elif self.rect.x > self._attribs['max_x']:
-            self.rect.x = self._attribs['max_x'] - 5
+            # LHS, so direction vector is to the right
+            self._reflection((1,0))
+        elif self.rect.x >= self._attribs['max_x']:
             ic('RHS')
-            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
-                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
-        elif self.rect.y < 5:
-            self.rect.y = 5
+            self._reflection((-1, 0))
+        elif self.rect.y <= 5:
             ic('ROOF')
-            self._reflection(hitx=(self.rect.midright[0] - self.rect.topleft[0]),
-                             hity=(self.rect.topleft[1]) - self.rect.midright[1])
-        elif self.rect.y > self._attribs['max_y']:
-            self.rect.y = self._attribs['max_y'] - 5
+            self._reflection((0, 1))
+        elif self.rect.y >= self._attribs['max_y']:
             ic('FLOOR', self.rect.y, self.rect.x)
-            self._reflection(hitx=(self.rect.center[0] - self.rect.midbottom[0]),
-                             hity=(self.rect.midbottom[1] - self.rect.center[1]))
+            self._reflection((0, -1))
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y
@@ -103,30 +95,13 @@ class Ball(pygame.sprite.Sprite):
         """ Change the image used for the ball """
         self._attribs['image'] = image
 
-    def v_x(self, v_x=None):
+    def speed(self, v_xy=None):
         """ Set the X velocity if passed and return the current value """
-        if v_x is None:
-            return self._attribs['v_x']
+        if v_xy is None:
+            return self._attribs['speed']
         # else:
-        self._attribs['v_x'] = v_x
-        return self._attribs['v_x']
-
-    def v_y(self, v_y=None):
-        """ Set the Y velocity if passed and return the current value """
-        if v_y is None:
-            return self._attribs['v_y']
-        # else:
-        self._attribs['v_y'] = v_y
-        return self._attribs['v_y']
-
-    def angle(self, angle=None):
-        """ Return the current angle value or set it if angle= is passed
-            Always returns the angle value after changing """
-        if angle is None:
-            return self._attribs['angle']
-        # else:
-        self._attribs['angle'] = angle
-        return self._attribs['angle']
+        self._attribs['speed'] = v_xy
+        return self._attribs['speed']
 
     def hit(self):
         """ Hit/Life counter loses 1 health on hit,

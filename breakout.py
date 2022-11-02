@@ -7,7 +7,6 @@
 
 # pylint: disable=no-member
 
-import math
 import sys
 import pygame
 import pygame.freetype
@@ -20,7 +19,7 @@ from wall import Block
 from debug import DebugBox
 
 # Setup
-DEBUG = True
+DEBUG = False
 # Enable and install icecream for debugging
 if DEBUG:
     install()
@@ -36,6 +35,7 @@ BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
 INIT_PLAYERPOS = (390, 560)
 BGCOLOUR = (0, 0, 0)
 WHITE = (255, 255, 255)
+TICKS = 60
 
 
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
@@ -121,15 +121,17 @@ def check_collisions(sprite, group):
     :returns Three values, the x and y position of the detected hit and True, otherwise 0,0,False
     """
 
-    try:
-        for sprite_n in iter(pygame.sprite.spritecollide(sprite, group, False)):
-            (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
-            if sprite_n.hit() == 0:
-                group.remove(sprite_n)
-                ic(sprite_n)
-            return hitx, hity, True
-    except TypeError:
-        return 0, 0, False  # zero, zero, False means no hit
+    if pygame.sprite.spritecollide(sprite, group, False):
+        try:
+            for sprite_n in iter(group.sprites()):
+                if sprite_n.rect.colliderect(sprite.rect):
+                    (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
+                    if sprite_n.hit() == 0:
+                        group.remove(sprite_n)
+                    return hitx, hity, True
+        except TypeError:
+            return 0, 0, False  # zero, zero, False means no hit
+    return 0, 0, False  # zero, zero, False means no hit
 
 
 def main():
@@ -167,8 +169,7 @@ def main():
     # player1.rect.x = 390
     player1.rect.x = 10
     player1.rect.y = 560
-    the_ball.rect.x = 300
-    the_ball.rect.y = 500
+
     # Draw the player sprite
     players.draw(screen)
     balls.draw(screen)
@@ -186,7 +187,7 @@ def main():
     while 1:
 
         # Limit to 60 frames per second. Call this once per frame only.
-        clock.tick(30)
+        clock.tick(TICKS)
 
         # Do a screen update, flicker free!
         pygame.display.flip()
@@ -212,9 +213,13 @@ def main():
         # Do the player actions
         process_event(player1, goleft=keys_pressed['left'], goright=keys_pressed['right'])
 
-        # Check for collisions and do movement all in one
-        the_ball.move(check_collisions(player1, balls))
-        the_ball.move(check_collisions(the_ball, wall))
+        # Check for collisions and do movement
+        # Bat and ball(s)
+        hit_x, hit_y, is_hit = check_collisions(player1, balls)
+        the_ball.move(hit_x, hit_y, is_hit)
+        # Primary ball and the wall bricks
+        hit_x, hit_y, is_hit = check_collisions(the_ball, wall)
+        the_ball.move(hit_x, hit_y, is_hit)
 
         # Update the sprites
         players.clear(screen, bg_screen)
@@ -228,8 +233,7 @@ def main():
             debugger.clear(BGCOLOUR)
             debugmessage = f"P {player1.rect.x:>4.0f},{player1.rect.y:>4.0f} " \
                            f"B {the_ball.rect.x:>4.0f},{the_ball.rect.y:>4.0f} " \
-                           f"A {math.degrees(the_ball.angle()):>4.0f} " \
-                           f"V {the_ball.v_x():>4.0f},{the_ball.v_y():>4.0f} " \
+                           f"V {the_ball.speed():>4.0f} " \
                            f"FT {clock.get_rawtime():>4.0f}ms FR {clock.get_fps():>4.0f} frames/sec"
             debugger.message(debugmessage)
 

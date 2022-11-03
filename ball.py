@@ -1,5 +1,4 @@
 """ Ball Object - extends pygame sprite class """
-import math
 import pygame
 from icecream import ic
 
@@ -67,8 +66,11 @@ class Ball(pygame.sprite.Sprite):
             # Force vector is from this hit point towards the centre of the ball.
             # We bounce with equal and opposite force, directed away
             # on a line from the hitpoint to the centre of the ball.
-            hitvector = pygame.math.Vector2(((hitx + self._attribs['my_centerx'],
-                                              hity - self._attribs['my_centery']))).normalize()
+            hit_distance = pygame.math.Vector2([hitx - self._attribs['my_centerx'],
+                                                hity - self._attribs['my_centery']])
+            hit_direction = [hit_distance[0] / hit_distance.magnitude(),
+                             hit_distance[1] / hit_distance.magnitude()]
+            hitvector = pygame.math.Vector2(hit_direction).normalize()
             ic(hitvector)
             self._reflection(hitvector)
 
@@ -76,7 +78,7 @@ class Ball(pygame.sprite.Sprite):
         elif self.rect.x <= 5:
             ic('LHS')
             # LHS, so direction vector is to the right
-            self._reflection((1,0))
+            self._reflection((1, 0))
         elif self.rect.x >= self._attribs['max_x']:
             ic('RHS')
             self._reflection((-1, 0))

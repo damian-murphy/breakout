@@ -35,7 +35,7 @@ BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
 INIT_PLAYERPOS = (390, 560)
 BGCOLOUR = (0, 0, 0)
 WHITE = (255, 255, 255)
-TICKS = 60
+TICKS = 30
 
 
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees

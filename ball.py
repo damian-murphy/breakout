@@ -6,6 +6,7 @@ WHITE = (255, 255, 255)
 SPEED = 5
 INIT_POS = (300, 500)
 
+
 class Ball(pygame.sprite.Sprite):
     """ Ball Object Constructor. Pass in the x and y position, and an image"""
 
@@ -53,6 +54,31 @@ class Ball(pygame.sprite.Sprite):
         ic(self._attribs['direction'], self._attribs['position'])
         self._nextpos()
 
+    def _fuzzing(self,  x_offset, y_offset):
+        """ Blur the collision point towards the cardinal directions to accommodate
+        the left-to-right collision detection methodology in pygame mask collisions """
+        if x_offset in range(0, int(round(self.rect.width/3)), 1):
+            ic("LEFT X HIT")
+            fuzz_x = 0
+        elif x_offset in range(int(round(self.rect.width/3))*2, self.rect.width, 1):
+            ic("RIGHT X HIT")
+            fuzz_x = self.rect.width
+        else:
+            ic("CENTRE X HIT")
+            fuzz_x = self._attribs['my_centerx']
+
+        if y_offset in range(0, int(round(self.rect.height/3)), 1):
+            ic("TOP Y HIT")
+            fuzz_y = 0
+        elif y_offset in range(int(round(self.rect.height/3))*2, self.rect.height, 1):
+            ic("BOTTOM Y HIT")
+            fuzz_y = self.rect.height
+        else:
+            ic("CENTRE Y HIT")
+            fuzz_y = self._attribs['my_centery']
+
+        return fuzz_x, fuzz_y
+
     def move(self, hitx=0, hity=0, is_hit=False):
         """ Keep the ball inside the play area
         Anything else is a sprite collision and is handled with collision maps.
@@ -60,12 +86,16 @@ class Ball(pygame.sprite.Sprite):
 
         If there's a hit detected, then we calculate the position from the
         centre of the sprite to the collision point.
-        This gives us the angle of impact from the horizontal."""
+        This gives us the angle of impact from the horizontal.
+        Remember - pygame returns the offset from topleft of the calling sprite
+        to the collision point detected in the masks
+        """
         if is_hit:
             ic('hit')
             # Force vector is from this hit point towards the centre of the ball.
             # We bounce with equal and opposite force, directed away
             # on a line from the hitpoint to the centre of the ball.
+            hitx, hity = self._fuzzing(hitx, hity)
             hit_distance = pygame.math.Vector2([hitx - self._attribs['my_centerx'],
                                                 hity - self._attribs['my_centery']])
             hit_direction = [hit_distance[0] / hit_distance.magnitude(),

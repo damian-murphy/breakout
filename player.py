@@ -42,13 +42,13 @@ class Player(pygame.sprite.Sprite):
         """ Return RHS x co-ord value"""
         return self.rect.right
 
-    def hit(self):
+    def hit(self, FLOOR=False):
         """ Hit/Life counter loses 1 health on hit,
         Allows us to have objects that need more than one hit to destroy.
         Return the health left
         This is the 'player lives' """
 
-        self._attribs['health'] -= 1
+        self._attribs['health'] -= 1 if FLOOR else 0
 
         return self._attribs['health']
 

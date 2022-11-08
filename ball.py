@@ -99,7 +99,7 @@ class Ball(pygame.sprite.Sprite):
             # on a line from the hitpoint to the centre of the ball.
             hitx, hity = self._fuzzing(hitx, hity)
             hit_distance = pygame.math.Vector2([hitx - self._attribs['my_centerx'],
-                                                hity - self._attribs['my_centery']])
+                                                hity - self._attribs['my_centery']]).normalize()
             hit_direction = [hit_distance[0] / hit_distance.magnitude(),
                              hit_distance[1] / hit_distance.magnitude()]
             hitvector = pygame.math.Vector2(hit_direction).normalize()

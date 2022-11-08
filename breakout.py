@@ -126,9 +126,16 @@ def check_collisions(sprite, group):
             for sprite_n in iter(group.sprites()):
                 if sprite_n.rect.colliderect(sprite.rect):
                     (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
+                    # We have a hit, now we need to work out the precise collision point
+                    # on the edges of the two sprites.
+                    # We could be inside the brick for example, depends on how fast we're moving
+                    dx = sprite.mask.overlap_area(sprite_n.mask, (hitx + 1, hity)) \
+                         - sprite.mask.overlap_area(sprite_n.mask, (hitx - 1, hity))
+                    dy = sprite.mask.overlap_area(sprite_n.mask, (hitx, hity + 1)) \
+                         - sprite.mask.overlap_area(sprite_n.mask, (hitx, hity - 1))
                     if sprite_n.hit() == 0:
                         group.remove(sprite_n)
-                    return hitx, hity, True
+                    return dx, dy, True
         except TypeError:
             return 0, 0, False  # zero, zero, False means no hit
     return 0, 0, False  # zero, zero, False means no hit

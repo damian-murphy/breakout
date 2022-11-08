@@ -19,13 +19,13 @@ class Ball(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.centery = INIT_POS
+        self.mask = pygame.mask.from_surface(image)
 
         my_width = image.get_width()
         my_height = image.get_height()
 
         # Now, fill in the values using CONSTANTS from top of file or passed in params
         self._attribs = {'surface': pygame.Surface([my_width, my_height]),
-                         'mask': pygame.mask.from_surface(image),
                          'speed': SPEED,
                          'max_x': screenx - my_width,
                          'max_y': screeny - my_height,
@@ -77,6 +77,8 @@ class Ball(pygame.sprite.Sprite):
             ic("CENTRE Y HIT")
             fuzz_y = self._attribs['my_centery']
 
+        ic(fuzz_x, fuzz_y)
+        
         return fuzz_x, fuzz_y
 
     def move(self, hitx=0, hity=0, is_hit=False):

@@ -78,7 +78,7 @@ class Ball(pygame.sprite.Sprite):
             fuzz_y = self._attribs['my_centery']
 
         ic(fuzz_x, fuzz_y)
-        
+
         return fuzz_x, fuzz_y
 
     def move(self, hitx=0, hity=0, is_hit=False):

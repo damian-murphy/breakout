@@ -19,7 +19,7 @@ from wall import Block
 from debug import DebugBox
 
 # Setup
-DEBUG = False
+DEBUG = True
 # Enable and install icecream for debugging
 if DEBUG:
     install()
@@ -36,7 +36,7 @@ INIT_PLAYERPOS = (390, 560)
 BGCOLOUR = (0, 0, 0)
 WHITE = (255, 255, 255)
 TICKS = 30
-
+PLAYER_HEALTH = 3
 
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
 # So, traditionally north or 0 degress is vertically up, now it's right or East.
@@ -129,13 +129,13 @@ def check_collisions(sprite, group):
                     # We have a hit, now we need to work out the precise collision point
                     # on the edges of the two sprites.
                     # We could be inside the brick for example, depends on how fast we're moving
-                    dx = sprite.mask.overlap_area(sprite_n.mask, (hitx + 1, hity)) \
-                         - sprite.mask.overlap_area(sprite_n.mask, (hitx - 1, hity))
-                    dy = sprite.mask.overlap_area(sprite_n.mask, (hitx, hity + 1)) \
-                         - sprite.mask.overlap_area(sprite_n.mask, (hitx, hity - 1))
+                    d_x = sprite.mask.overlap_area(sprite_n.mask, (hitx + 1, hity)) \
+                          - sprite.mask.overlap_area(sprite_n.mask, (hitx - 1, hity))
+                    d_y = sprite.mask.overlap_area(sprite_n.mask, (hitx, hity + 1)) \
+                          - sprite.mask.overlap_area(sprite_n.mask, (hitx, hity - 1))
                     if sprite_n.hit() == 0:
                         group.remove(sprite_n)
-                    return dx, dy, True
+                    return d_x, d_y, True
         except TypeError:
             return 0, 0, False  # zero, zero, False means no hit
     return 0, 0, False  # zero, zero, False means no hit
@@ -176,6 +176,9 @@ def main():
     # player1.rect.x = 390
     player1.rect.x = 10
     player1.rect.y = 560
+
+    # Set the starting player health
+    player1.set_lives(PLAYER_HEALTH)
 
     # Draw the player sprite
     players.draw(screen)
@@ -222,8 +225,11 @@ def main():
 
         # Check for collisions and do movement
         # Bat and ball(s)
-        hit_x, hit_y, is_hit = check_collisions(player1, balls)
-        the_ball.move(hit_x, hit_y, is_hit)
+        for a_ball in balls:
+            hit_x, hit_y, is_hit = check_collisions(a_ball, players)
+            ic("Premove on bat hit", hit_x, hit_y, is_hit)
+            a_ball.move(hit_x, hit_y, is_hit)
+
         # Primary ball and the wall bricks
         hit_x, hit_y, is_hit = check_collisions(the_ball, wall)
         the_ball.move(hit_x, hit_y, is_hit)

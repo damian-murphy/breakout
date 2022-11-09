@@ -20,7 +20,7 @@ class Block(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         # Update the position of this object by setting the values of rect.x and rect.y
         self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
+        self.mask = pygame.mask.from_surface(self.image.convert_alpha())
         self.rect.x = init_x
         self.rect.y = init_y
 

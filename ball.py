@@ -19,7 +19,7 @@ class Ball(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.centery = INIT_POS
-        self.mask = pygame.mask.from_surface(image)
+        self.mask = pygame.mask.from_surface(self.image.convert_alpha())
 
         my_width = image.get_width()
         my_height = image.get_height()

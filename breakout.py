@@ -35,7 +35,7 @@ BACKGROUND_IMG = pygame.image.load("graphics/images/sky_bg1.jpg")
 INIT_PLAYERPOS = (390, 560)
 BGCOLOUR = (0, 0, 0)
 WHITE = (255, 255, 255)
-TICKS = 30
+TICKS = 60
 PLAYER_HEALTH = 3
 
 # In the pygame screen, the cartesian co-ordinates are rotated right by 90 degrees
@@ -126,6 +126,7 @@ def check_collisions(sprite, group):
             for sprite_n in iter(group.sprites()):
                 if sprite_n.rect.colliderect(sprite.rect):
                     (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
+                    ic("collide_mask:", hitx, hity)
                     # We have a hit, now we need to work out the precise collision point
                     # on the edges of the two sprites.
                     # We could be inside the brick for example, depends on how fast we're moving
@@ -233,6 +234,9 @@ def main():
         # Primary ball and the wall bricks
         hit_x, hit_y, is_hit = check_collisions(the_ball, wall)
         the_ball.move(hit_x, hit_y, is_hit)
+
+        ic(the_ball.rect.x, the_ball.rect.y, player1.rect.x, player1.rect.y,
+           the_ball.rect.width, the_ball.rect.height, player1.rect.width, player1.rect.height)
 
         # Update the sprites
         players.clear(screen, bg_screen)

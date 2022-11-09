@@ -224,6 +224,12 @@ def main():
         # Do the player actions
         process_event(player1, goleft=keys_pressed['left'], goright=keys_pressed['right'])
 
+        # Check if player has any health left
+        if the_ball.hit_floor():
+            player1.hit(FLOOR=True)
+        if player1.hit() <= 0:
+            pygame.quit()
+
         # Check for collisions and do movement
         # Bat and ball(s)
         for a_ball in balls:

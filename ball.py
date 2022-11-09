@@ -33,6 +33,7 @@ class Ball(pygame.sprite.Sprite):
                          'my_centery': round(my_height/2),
                          'health': 1,
                          'primary': True,
+                         'hitfloor': False,
                          'position': pygame.math.Vector2(INIT_POS),
                          'direction': pygame.math.Vector2(self.rect.centerx + SPEED,
                                                           -(self.rect.centery - SPEED)).normalize()
@@ -119,10 +120,12 @@ class Ball(pygame.sprite.Sprite):
             self._reflection((0, 1))
         elif self.rect.y >= self._attribs['max_y']:
             ic('FLOOR', self.rect.y, self.rect.x)
+            self._attribs['hitfloor'] = True
             self._reflection((0, -1))
         else:
             # Otherwise, move normally in open game space
             # Calculate the next position based on angle and speed in x,y
+            self._attribs['hitfloor'] = False
             self._nextpos()
 
     def setimage(self, image):
@@ -153,3 +156,9 @@ class Ball(pygame.sprite.Sprite):
         :returns True if this is the original primary ball, otherwise False """
 
         return self._attribs['primary']
+
+    def hit_floor(self):
+        """ Return if we hit the floor or not for counting player lives
+        :return True if we hit floor last move, False otherwise """
+
+        return self._attribs['hitfloor']

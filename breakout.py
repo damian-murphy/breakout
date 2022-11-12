@@ -120,6 +120,8 @@ def check_collisions(sprite, group):
     :param group: A group of sprite objects that 'sprite' might have collided with
     :returns Three values, the x and y position of the detected hit and True, otherwise 0,0,False
     """
+    d_x = 0
+    d_y = 0
 
     if pygame.sprite.spritecollide(sprite, group, False):
         try:
@@ -127,19 +129,30 @@ def check_collisions(sprite, group):
                 if sprite_n.rect.colliderect(sprite.rect):
                     (hitx, hity) = pygame.sprite.collide_mask(sprite, sprite_n)
                     ic("collide_mask:", hitx, hity)
-                    # We have a hit, now we need to work out the precise collision point
-                    # on the edges of the two sprites.
-                    # We could be inside the brick for example, depends on how fast we're moving
-                    d_x = sprite.mask.overlap_area(sprite_n.mask, (hitx + 1, hity)) \
-                          - sprite.mask.overlap_area(sprite_n.mask, (hitx - 1, hity))
-                    d_y = sprite.mask.overlap_area(sprite_n.mask, (hitx, hity + 1)) \
-                          - sprite.mask.overlap_area(sprite_n.mask, (hitx, hity - 1))
+
+                    diff_x = sprite.rect.x - sprite_n.rect.centerx
+                    diff_y = sprite.rect.y - sprite_n.rect.centery
+
+                    v_dir = sprite.get_direction()
+
+                    if abs(diff_x) > abs(diff_y):
+                        d_x = sprite_n.rect.left - (sprite.rect.width/2) \
+                            if diff_x < 0 else sprite_n.rect.right + (sprite.rect.width/2)
+                        if (diff_x < 0 and v_dir[0] > 0) or (diff_x > 0 and v_dir[0] < 0):
+                            v_dir.reflect_ip(pygame.math.Vector2(1, 0))
+                    else:
+                        d_y = sprite_n.rect.top - (sprite.rect.width/2) \
+                            if diff_y < 0 else sprite_n.rect.bottom + (sprite.rect.width/2)
+                        if (diff_y < 0 and v_dir[1] > 0) or (diff_y > 0 and v_dir[1] < 0):
+                            v_dir.reflect_ip(pygame.math.Vector2(0, 1))
+
                     if sprite_n.hit() == 0:
                         group.remove(sprite_n)
-                    return d_x, d_y, True
+                    return d_x, d_y, v_dir, True
+
         except TypeError:
-            return 0, 0, False  # zero, zero, False means no hit
-    return 0, 0, False  # zero, zero, False means no hit
+            return 0, 0, None, False  # zero, zero, False means no hit
+    return 0, 0, None, False  # zero, zero, False means no hit
 
 
 def main():
@@ -233,13 +246,16 @@ def main():
         # Check for collisions and do movement
         # Bat and ball(s)
         for a_ball in balls:
-            hit_x, hit_y, is_hit = check_collisions(a_ball, players)
+            hit_x, hit_y, new_vector, is_hit = check_collisions(a_ball, players)
             ic("Premove on bat hit", hit_x, hit_y, is_hit)
-            a_ball.move(hit_x, hit_y, is_hit)
+            if is_hit:
+                a_ball.move(hit_x, hit_y, new_vector, is_hit)
+            else:
+                a_ball.move(hit_x, hit_y, None, is_hit)
 
         # Primary ball and the wall bricks
-        hit_x, hit_y, is_hit = check_collisions(the_ball, wall)
-        the_ball.move(hit_x, hit_y, is_hit)
+        hit_x, hit_y, new_vector, is_hit = check_collisions(the_ball, wall)
+        the_ball.move(hit_x, hit_y, new_vector, is_hit)
 
         ic(the_ball.rect.x, the_ball.rect.y, player1.rect.x, player1.rect.y,
            the_ball.rect.width, the_ball.rect.height, player1.rect.width, player1.rect.height)

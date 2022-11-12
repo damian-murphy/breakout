@@ -3,7 +3,7 @@ import pygame
 from icecream import ic
 
 WHITE = (255, 255, 255)
-SPEED = 5
+SPEED = 1
 INIT_POS = (300, 500)
 
 
@@ -82,7 +82,7 @@ class Ball(pygame.sprite.Sprite):
 
         return fuzz_x, fuzz_y
 
-    def move(self, hitx=0, hity=0, is_hit=False):
+    def move(self, hitx=0, hity=0, vector=None, is_hit=False):
         """ Keep the ball inside the play area
         Anything else is a sprite collision and is handled with collision maps.
         Here we'll also take care of the bounding box collisions
@@ -98,14 +98,15 @@ class Ball(pygame.sprite.Sprite):
             # Force vector is from this hit point towards the centre of the ball.
             # We bounce with equal and opposite force, directed away
             # on a line from the hitpoint to the centre of the ball.
-            hitx, hity = self._fuzzing(hitx, hity)
-            hit_distance = pygame.math.Vector2([hitx - self._attribs['my_centerx'],
-                                                hity - self._attribs['my_centery']]).normalize()
-            hit_direction = [hit_distance[0] / hit_distance.magnitude(),
-                             hit_distance[1] / hit_distance.magnitude()]
-            hitvector = pygame.math.Vector2(hit_direction).normalize()
-            ic(hitvector)
-            self._reflection(hitvector)
+            # hitx, hity = self._fuzzing(hitx, hity)
+            # hit_distance = pygame.math.Vector2([hitx - self._attribs['my_centerx'],
+            #                                     hity - self._attribs['my_centery']]).normalize()
+            # hit_direction = [hit_distance[0] / hit_distance.magnitude(),
+            #                  hit_distance[1] / hit_distance.magnitude()]
+            # hitvector = pygame.math.Vector2(hit_direction).normalize()
+            ic(vector)
+            # self._reflection(hitvector)
+            self._attribs['direction'] = vector.normalize()
 
         # Check and see if you hit the side of the play area
         elif self.rect.x <= 5:
@@ -133,7 +134,7 @@ class Ball(pygame.sprite.Sprite):
         self._attribs['image'] = image
 
     def speed(self, v_xy=None):
-        """ Set the X velocity if passed and return the current value """
+        """ Set the velocity if passed and return the current value """
         if v_xy is None:
             return self._attribs['speed']
         # else:
@@ -162,3 +163,9 @@ class Ball(pygame.sprite.Sprite):
         :return True if we hit floor last move, False otherwise """
 
         return self._attribs['hitfloor']
+
+    def get_direction(self):
+        """ Return the current direction vector
+         :return Pygame.math.Vector2() """
+
+        return self._attribs['direction']

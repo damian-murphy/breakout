@@ -3,7 +3,7 @@ import pygame
 from icecream import ic
 
 WHITE = (255, 255, 255)
-SPEED = 1
+SPEED = 5
 INIT_POS = (300, 500)
 
 
